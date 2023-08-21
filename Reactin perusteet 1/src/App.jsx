@@ -18,22 +18,31 @@ const calculateAverage = (good, neutral, bad, all) => {
 
 
 const Statistics = (props) => {
-  let average = calculateAverage(props.good, props.neutral, props.bad, props.all)
-  let positive = (props.good * 100) / props.all
-
+  let average, positive = undefined;
+  average = calculateAverage(props.good, props.neutral, props.bad, props.all)
+  positive = (props.good * 100) / props.all
+  if(props.good === 0 && props.neutral === 0 && props.bad === 0){
+    return(
+      <div>
+        <h1>Statistics</h1>
+        <p>No feedback given</p>
+      </div>
+    )
+  } else{
+    return(
+      <div>
+        <h1>Statistics</h1>
+        <p>Good: {props.good} </p>
+        <p>Neutral: {props.neutral} </p>
+        <p>Bad: {props.bad} </p>
+        <p>All: {props.all}</p>
+        <hr />
+        <p>Average: {average}</p>
+        <p>Positive: {positive}%</p>
+      </div>
+    )
+  }
   
-  return(
-    <div>
-      <h1>Statistics</h1>
-      <p>Good: {props.good} </p>
-      <p>Neutral: {props.neutral} </p>
-      <p>Bad: {props.bad} </p>
-      <p>All: {props.all}</p>
-      <hr />
-      <p>Average: {average}</p>
-      <p>Positive: {positive}%</p>
-    </div>
-  )
 }
 const App = () => {
   const [good, setGood] = useState(0)
