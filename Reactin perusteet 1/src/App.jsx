@@ -13,17 +13,15 @@ const Buttons = (props) => {
 
 const calculateAverage = (good, neutral, bad, all) => {  
   const average = (good + 0 + -bad) / all;
-
   return average;
 };
 
 
 const Statistics = (props) => {
-  /*
-  props.all  | 100%
-  props.good | x%
-  */
+  let average = calculateAverage(props.good, props.neutral, props.bad, props.all)
   let positive = (props.good * 100) / props.all
+
+  
   return(
     <div>
       <h1>Statistics</h1>
@@ -32,7 +30,7 @@ const Statistics = (props) => {
       <p>Bad: {props.bad} </p>
       <p>All: {props.all}</p>
       <hr />
-      <p>Average: {calculateAverage(props.good, props.neutral, props.bad, props.all)}</p>
+      <p>Average: {average}</p>
       <p>Positive: {positive}%</p>
     </div>
   )
