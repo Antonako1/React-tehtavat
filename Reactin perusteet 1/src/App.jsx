@@ -11,16 +11,27 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-
+  let points = new Uint8Array(anecdotes.length);
   const [selected, setSelected] = useState(0)
+  
+
   const handleSelect = () => {
-    let randomNumber = Math.floor((Math.random() * anecdotes.length) + 1);
+    let randomNumber = Math.floor((Math.random() * anecdotes.length) + 0);
     setSelected(randomNumber)
+  }
+  const handleVote = () => {
+    let copy = [...points];
+    copy[selected] += 1;
+    points = copy;
+    console.log(points, copy);
   }
   return (
     <div>
       {anecdotes[selected]}
       <br/>
+      has {points[selected]} points!
+      <br/>
+      <button onClick={handleVote}>vote</button>
       <button onClick={handleSelect}>next anecdote</button>
     </div>
   )
