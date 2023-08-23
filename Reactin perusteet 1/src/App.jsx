@@ -13,16 +13,34 @@ const App = () => {
   ]
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(new Uint8Array(anecdotes.length));
+  const [mostVotes, setMostVotes] = useState(0)
+  const [pos, setPos] = useState(0);
 
   const handleSelect = () => {
     let randomNumber = Math.floor((Math.random() * anecdotes.length) + 0);
     setSelected(randomNumber)
+    mostVotesFunc();
   }
 
   const handleVote = () => {
     let copy = [...points];
     copy[selected] += 1;
     setPoints(copy);
+    mostVotesFunc();
+  }
+
+  const mostVotesFunc = () => {
+    let biggest = points[0];
+    let posi = 0;
+
+    for(let i = 0; i < points.length; i++){
+      if(points[i] > biggest){
+        biggest = points[i];
+        posi = i;
+      }
+    }
+    setMostVotes(biggest);
+    setPos(posi);
   }
 
   return (
@@ -33,6 +51,12 @@ const App = () => {
       <br/>
       <button onClick={handleVote}>vote</button>
       <button onClick={handleSelect}>next anecdote</button>
+
+      <div>
+        <h1>Anecdote with most votes is:</h1>
+        <i>{anecdotes[pos]}</i>
+        <p>With <b>{mostVotes}</b> votes! </p>
+      </div>
     </div>
   )
 }
