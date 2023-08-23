@@ -1,34 +1,58 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+// const Header = (props) => {
+//   return <h1>{props.course.name}H</h1>
+// }
+
+// const Part = (props) => {
+//   return <p>{props.part} {props.exercises} </p>
+// }
+
+// const Content = (props) => {
+//   return(
+//     <div>
+//       <Part part={props.part1.parts[0].name} exercises={props.part1.parts[0].exercises} />
+//       <Part part={props.part2.parts[1].name} exercises={props.part2.parts[1].exercises} />
+//       <Part part={props.part3.parts[2].name} exercises={props.part3.parts[2].exercises} />
+//     </div>
+//   )
+// }
+// const Total = (props) => {
+//   console.log(props)
+//   return <p >Number of exercises {
+//     props.part1.parts[0].exercises + 
+//     props.part2.parts[1].exercises + 
+//     props.part3.parts[2].exercises
+//     }</p>
+// }
+
+const App = () => {
+  const course = {
+    name: 'Half Stack application development',
+    id: 1,
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      }
+    ]
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <Course course={course} />
+    </div>
   )
 }
 
