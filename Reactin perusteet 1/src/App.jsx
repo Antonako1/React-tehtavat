@@ -34,9 +34,16 @@ const App = () => {
     let posi = 0;
 
     for(let i = 0; i < points.length; i++){
-      if(points[i] > biggest){
-        biggest = points[i];
-        posi = i;
+      if(points[i] === 0){
+        if(points[i] > biggest){
+          biggest = points[i];
+          posi = i;
+        }
+      }else{
+        if(points[i] > biggest -1){
+          biggest = points[i];
+          posi = i;
+        }
       }
     }
     setMostVotes(biggest);
@@ -55,7 +62,7 @@ const App = () => {
       <div>
         <h1>Anecdote with most votes is:</h1>
         <i>{anecdotes[pos]}</i>
-        <p>With <b>{mostVotes}</b> votes! </p>
+        <p>With <b>{points[selected] === mostVotes + 1? points[selected] : mostVotes}</b> votes! </p>
       </div>
     </div>
   )
