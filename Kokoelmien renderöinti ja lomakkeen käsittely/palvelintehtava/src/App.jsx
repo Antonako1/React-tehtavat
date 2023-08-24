@@ -18,12 +18,21 @@ const Content = (props) => {
   )
 }
 const Total = (props) => {
-  console.log(props)
-  return <p >Number of exercises {
-    props.part1.parts[0].exercises + 
-    props.part2.parts[1].exercises + 
-    props.part3.parts[2].exercises
-    }</p>
+  let a = 0 ; // a = joku
+  const total = props.course.parts.reduce( (s, p) => {
+    if(s.exercises == undefined && p.exercises != undefined){
+      a += p.exercises
+    }
+    if(p.exercises == undefined && s.exercises != undefined){
+      a += s.exercises
+    }
+    if(p.exercises != undefined && s.exercises != undefined){
+      a += p.exercises + s.exercises
+    }
+    return a
+  })
+
+  return <p >Number of exercises {total}</p>
 }
 const Course = (props) => {
   const course = props.course;
@@ -36,9 +45,7 @@ const Course = (props) => {
       part3={course}
       />
       <Total
-      part1={course} 
-      part2={course} 
-      part3={course}  
+      course={course}
       />
     </div>
   )
