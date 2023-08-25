@@ -16,35 +16,25 @@ const Content = (props) => {
       }
     </div>
   )
-}
-const Total = (props) => {
-  let a = 0 ; // a = joku
-  const total = props.course.parts.reduce( (s, p) => {
-    if(s.exercises == undefined && p.exercises != undefined){
-      a += p.exercises
-    }
-    if(p.exercises == undefined && s.exercises != undefined){
-      a += s.exercises
-    }
-    if(p.exercises != undefined && s.exercises != undefined){
-      a += p.exercises + s.exercises
-    }
-    return a
-  })
+} 
 
-  return <p >Number of exercises {total}</p>
+const Total = (props) => {
+  console.log(props)
+  return (
+		<p>Number of exercises  
+		  {
+		    props.course.parts.reduce((total, part) => total + part.exercises, 0)
+		  }
+		</p>
+		)
 }
 const Course = (props) => {
   const course = props.course;
   return(
     <div>
-      {/* <Header course={course} /> */}
-      <Content 
-      course={course}
-      />
-      {/* <Total
-      course={course}
-      /> */}
+      <Header course={course} />
+      <Content course={course}/>
+      <Total course={course}/>
     </div>
   )
 }
@@ -68,6 +58,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'State of a component aaa',
+        exercises: 142,
+        id: 4
       }
     ]
   }
