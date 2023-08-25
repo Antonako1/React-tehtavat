@@ -21,12 +21,12 @@ const Content = (props) => {
 const Total = (props) => {
   console.log(props)
   return (
-		<p>Number of exercises  
-		  {
-		    props.course.parts.reduce((total, part) => total + part.exercises, 0)
-		  }
-		</p>
-		)
+	<p>Number of exercises  
+	  {
+	    props.course.parts.reduce((total, part) => total + part.exercises, 0)
+	  }
+	</p>
+	)
 }
 const Course = (props) => {
   const course = props.course;
