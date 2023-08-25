@@ -11,9 +11,9 @@ const Part = (props) => {
 const Content = (props) => {
   return(
     <div>
-      <Part part={props.part1.parts[0].name} exercises={props.part1.parts[0].exercises} />
-      <Part part={props.part2.parts[1].name} exercises={props.part2.parts[1].exercises} />
-      <Part part={props.part3.parts[2].name} exercises={props.part3.parts[2].exercises} />
+      {
+        props.course.parts.map(part => <Part part={part.name} exercises={part.exercises} />)
+      }
     </div>
   )
 }
@@ -38,15 +38,13 @@ const Course = (props) => {
   const course = props.course;
   return(
     <div>
-      <Header course={course} />
+      {/* <Header course={course} /> */}
       <Content 
-      part1={course} 
-      part2={course} 
-      part3={course}
-      />
-      <Total
       course={course}
       />
+      {/* <Total
+      course={course}
+      /> */}
     </div>
   )
 }
