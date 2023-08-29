@@ -19,7 +19,11 @@ const checkDuplicates = (obj, copy, type) => {
 
 const checkErrors = (objecti, copy) => {
   let mem = 0;
+<<<<<<< Updated upstream
   const reg = /^[0-9-_._+]*$/;
+=======
+  const reg = /^[0-9-_._+\s+]*$/;
+>>>>>>> Stashed changes
   if(checkDuplicates(objecti, copy, "Name")){
     alert(`${objecti.name} is already in the phonebook`)
     mem++;
@@ -38,7 +42,7 @@ const checkErrors = (objecti, copy) => {
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: 123456789 }
+    { name: 'Arto Hellas', number: +358441052874 }
   ]) 
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState(0)
