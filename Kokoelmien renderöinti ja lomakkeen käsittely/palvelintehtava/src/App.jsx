@@ -1,5 +1,14 @@
 import { useState } from 'react'
 
+const checkDuplicate = (obj, copy) => {
+  for(let i = 0; i < copy.length; i++){
+    if(copy[i].name == obj.name){
+      return true;
+    }
+  }
+  return false
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
@@ -12,10 +21,14 @@ const App = () => {
 
   const handleSubmit = () => {
     let copy = [...persons];
-    copy.push(
-      {name: newName}
-    )
-    setPersons(copy)
+    let objecti = {name: newName};
+
+    if(checkDuplicate(objecti, copy)){
+      alert(`${objecti.name} is already in phonebook`)
+    } else {
+      copy.push(objecti)
+      setPersons(copy)
+    }
     document.getElementById('input-field').value = "";
   }
   return (
