@@ -42,7 +42,8 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState(0)
-
+  const [search, setSearch] = useState('')
+  
   const updateInputStr = (e) => {
     setNewName(e.target.value)
   }
@@ -62,13 +63,22 @@ const App = () => {
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
   }
+  const handleSearch = () => {
+    console.log("Searching for:", search)
+  }
+  const updateInputSrc = (e) => {setSearch(e.target.value);}
+
   return (
     <div>
       <h2>Phonebook</h2>
+        <form onSubmit={e => e.preventDefault()}>
+          search:  <input type="text" onChange={updateInputSrc} placeholder='Koko nimi'/> <button type='submit' onClick={handleSearch}>search</button>
+        </form>
+      <hr />
       <form onSubmit={e => e.preventDefault()}>
         <div>
           name: <input onChange={updateInputStr}
-                  placeholder='Kokonimi'
+                  placeholder='Koko nimi'
                   id='input-field-str'
                 />
         </div>
