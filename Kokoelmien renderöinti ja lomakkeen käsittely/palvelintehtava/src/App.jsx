@@ -19,7 +19,7 @@ const checkDuplicates = (obj, copy, type) => {
 
 const checkErrors = (objecti, copy) => {
   let mem = 0;
-  const reg = new RegExp('^[0-9]+$');
+  const reg = /^[0-9-_._+]*$/;
   if(checkDuplicates(objecti, copy, "Name")){
     alert(`${objecti.name} is already in the phonebook`)
     mem++;
@@ -28,7 +28,8 @@ const checkErrors = (objecti, copy) => {
     alert(`${objecti.number} is already in the phonebook`)
     mem++;
   }
-  if(reg.test(objecti.number)){
+  console.log(reg.test(objecti.number))
+  if(reg.test(objecti.number) == false){
     alert(`${objecti.number} is not a number`)
     mem++;
   }
