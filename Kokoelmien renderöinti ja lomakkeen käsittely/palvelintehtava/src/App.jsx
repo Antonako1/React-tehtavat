@@ -21,16 +21,17 @@ const checkErrors = (objecti, copy) => {
   let mem = 0;
   const reg = /^[0-9-_._+\s+]*$/;
   if(checkDuplicates(objecti, copy, "Name")){
-    alert(`${objecti.name} is already in the phonebook`)
+    alert(`Warning: ${objecti.name} is already in the phonebook`)
     mem++;
   }
   if(checkDuplicates(objecti, copy, "Number")){
-    alert(`${objecti.number} is already in the phonebook`)
+    alert(`Warning: ${objecti.number} is already in the phonebook`)
     mem++;
   }
+  if(mem != 2){mem=0;}
   console.log(reg.test(objecti.number))
   if(reg.test(objecti.number) == false){
-    alert(`${objecti.number} is not a number`)
+    alert(`Warning: ${objecti.number} is not a number`)
     mem++;
   }
   return mem;
@@ -38,12 +39,16 @@ const checkErrors = (objecti, copy) => {
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: +358441052874 }
-  ]) 
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])  
   const [newName, setNewName] = useState('')
-  const [newNum, setNewNum] = useState(0)
-  const [search, setSearch] = useState('')
-  
+  const [newNum, setNewNum] = useState(0);
+  const [idList, setIdList] = useState([]);
+  const [search, setSearch] = useState("");
+
   const updateInputStr = (e) => {
     setNewName(e.target.value)
   }
@@ -54,28 +59,37 @@ const App = () => {
     let copy = [...persons];
     let objecti = {
       name: newName,
-      number: newNum
+      number: newNum,
+      id: (persons.length+1)
     };
     if(checkErrors(objecti, copy) === 0){
+          objecti.number = String(objecti.number)
         copy.push(objecti)
         setPersons(copy)
     }
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
   }
-  const handleSearch = () => {
-    console.log("Searching for:", search)
-  }
-  const updateInputSrc = (e) => {setSearch(e.target.value);}
+  const updateInputSrc = (e) => {
+    setSearch(e.target.value);
+
+    const filterPersonId = persons
+    .filter(person => person.name.toLowerCase()
+    .includes(e.target.value.toLowerCase()))
+    .map(person => person.id);
+
+  setIdList(filterPersonId);
+}
+
 
   return (
     <div>
       <h2>Phonebook</h2>
-        <form onSubmit={e => e.preventDefault()}>
-          search:  <input type="text" onChange={updateInputSrc} placeholder='Koko nimi'/> <button type='submit' onClick={handleSearch}>search</button>
-        </form>
-      <hr />
       <form onSubmit={e => e.preventDefault()}>
+        <div>
+          search:  <input type="text" onChange={updateInputSrc} placeholder='Etsi nimellä'/>
+        </div>
+        <hr />
         <div>
           name: <input onChange={updateInputStr}
                   placeholder='Koko nimi'
@@ -95,7 +109,24 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {
-        persons.map(people => <p key={people.name}>{people.name} | {people.number}</p>)
+        <div id='number-area'>
+          {
+              search !== "" ? 
+              <div>
+                {
+                  idList.map(personsID =>  
+                    <p key={personsID}>{persons[personsID-1].name} | {persons[personsID-1].number}</p>       
+                  )
+                }
+              </div>
+              :
+              <div>
+                {
+                  persons.map(people => <p key={people.name}>{people.name} | {people.number}</p>)
+                }
+              </div>
+          }
+        </div>
       }
     </div>
   )
