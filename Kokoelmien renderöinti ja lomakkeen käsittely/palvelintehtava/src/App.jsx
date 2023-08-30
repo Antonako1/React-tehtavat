@@ -37,6 +37,78 @@ const checkErrors = (objecti, copy) => {
   return mem;
 }
 
+const Input = (props) => {
+  return(
+    <div>
+      {props.text}  <input 
+        type={props.type} 
+        onChange={props.func} 
+        placeholder={props.placeholder} 
+        id={props.id}/>
+    </div>
+  )
+}
+
+const Search = (props) => {
+  return(
+    <Input 
+      text={props.text}
+      type="text"
+      func={props.func}
+      placeholder={props.placeholder}
+      id="input-search"
+    />    
+  )
+}
+
+const AddPersons = (props) => {
+  return(
+    <div>
+      <Input 
+        text="Name: "
+        type="text"
+        func={props.updateInputStr}
+        placeholder='Koko nimi'
+        id='input-field-str'
+      />
+      <br />
+      <Input 
+        text="Number: "
+        type="text"
+        func={props.updateInputInt}
+        placeholder='Puhelin numero'
+        id='input-field-int'
+      />
+      <div>
+        <button type="submit" onClick={props.handleSubmit}>add</button>
+      </div>
+    </div>
+    )
+}
+
+const Persons = (props) => {
+  return(
+    <div>
+      {
+        props.search !== "" ? 
+        <div>
+          {
+            props.idList.map(personsID =>  
+              <p key={personsID}>{props.persons[personsID-1].name} | {props.persons[personsID-1].number}</p>       
+            )
+          }
+        </div>
+        :
+        <div>
+          {
+            props.persons.map(people => <p key={people.name}>{people.name} | {people.number}</p>)
+          }
+        </div>
+     }
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -81,56 +153,36 @@ const App = () => {
   setIdList(filterPersonId);
 }
 
-
   return (
     <div>
       <h2>Phonebook</h2>
+
       <form onSubmit={e => e.preventDefault()}>
-        <div>
-          search:  <input type="text" onChange={updateInputSrc} placeholder='Etsi nimellä'/>
-        </div>
+        <Search 
+          text="Search: "
+          func={updateInputSrc}
+          placeholder="Etsi nimellä"
+        />
+
         <hr />
-        <div>
-          name: <input onChange={updateInputStr}
-                  placeholder='Koko nimi'
-                  id='input-field-str'
-                />
-        </div>
-        <br />
-        <div>
-          number: <input onChange={updateInputInt}
-                      placeholder='Puhelin numero'
-                      id='input-field-int' 
-                    />
-        </div>
-        <div>
-          <button type="submit" onClick={handleSubmit}>add</button>
-        </div>
+        
+        <AddPersons
+          updateInputStr={updateInputStr}
+          updateInputInt={updateInputInt}
+          handleSubmit={handleSubmit}
+        />
       </form>
+
       <h2>Numbers</h2>
-      {
-        <div id='number-area'>
-          {
-              search !== "" ? 
-              <div>
-                {
-                  idList.map(personsID =>  
-                    <p key={personsID}>{persons[personsID-1].name} | {persons[personsID-1].number}</p>       
-                  )
-                }
-              </div>
-              :
-              <div>
-                {
-                  persons.map(people => <p key={people.name}>{people.name} | {people.number}</p>)
-                }
-              </div>
-          }
-        </div>
-      }
+      <div id='number-area'>
+        <Persons 
+          search={search}
+          idList={idList}
+          persons={persons}
+        />
+      </div>
     </div>
   )
-
 }
 
 export default App
