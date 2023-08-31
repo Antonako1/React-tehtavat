@@ -1,5 +1,6 @@
 import { useState, useEffect  } from 'react'
 import axios from 'axios';
+// Functions
 const checkDuplicates = (obj, copy, type) => {
   if(type === "Name"){
     for(let i = 0; i < copy.length; i++){
@@ -37,6 +38,15 @@ const checkErrors = (objecti, copy) => {
   return mem;
 }
 
+const fixId = (json) => {
+  let jsonCopy = json
+  for(let i = 0; json.persons.length;i++){
+    jsonCopy.persons[i] = i + 1;
+  }
+  return jsonCopy;
+}
+
+// Components
 const Input = (props) => {
   return(
     <div>
@@ -146,6 +156,15 @@ const App = () => {
     }
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
+
+    axios.post('http://localhost:3001/persons', objecti)
+      .then(response => {
+        console.log('Data appended:', response.data);
+        // Update your local state or fetch the data again to reflect the changes
+      })
+      .catch(error => {
+        console.error('Error appending data:', error);
+      });
   }
   const updateInputSrc = (e) => {
     setSearch(e.target.value);
@@ -157,7 +176,9 @@ const App = () => {
 
   setIdList(filterPersonId);
 }
-
+const handleDelete = () => {
+  
+}
   return (
     <div>
       <h2>Phonebook</h2>
