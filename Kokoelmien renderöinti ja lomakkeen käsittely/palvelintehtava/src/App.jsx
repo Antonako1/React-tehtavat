@@ -1,5 +1,7 @@
 import { useState, useEffect  } from 'react'
 import axios from 'axios';
+import { loadJson, appendJson } from './handlejson';
+
 // Functions
 const checkDuplicates = (obj, copy, type) => {
   if(type === "Name"){
@@ -120,22 +122,13 @@ const Persons = (props) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-
-  useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+  const [persons, setPersons] = useState([]);  
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState(0);
   const [idList, setIdList] = useState([]);
   const [search, setSearch] = useState("");
-
+  const [loading, setLoading] = useState(true);
+  
   const updateInputStr = (e) => {
     setNewName(e.target.value)
   }
@@ -160,7 +153,6 @@ const App = () => {
     axios.post('http://localhost:3001/persons', objecti)
       .then(response => {
         console.log('Data appended:', response.data);
-        // Update your local state or fetch the data again to reflect the changes
       })
       .catch(error => {
         console.error('Error appending data:', error);
@@ -175,40 +167,59 @@ const App = () => {
     .map(person => person.id);
 
   setIdList(filterPersonId);
-}
-const handleDelete = () => {
-  
-}
-  return (
-    <div>
-      <h2>Phonebook</h2>
+  }
+  const handleDelete = () => {
+    
+  }
 
-      <form onSubmit={e => e.preventDefault()}>
-        <Search 
-          text="Search: "
-          func={updateInputSrc}
-          placeholder="Etsi nimellä"
-        />
 
-        <hr />
+  useEffect(() => {
+    // Inside this effect, call loadJson and set the state when the data is fetched
+    loadJson()
+      .then(data => {
+        setPersons(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  }, []);
 
-        <AddPersons
-          updateInputStr={updateInputStr}
-          updateInputInt={updateInputInt}
-          handleSubmit={handleSubmit}
-        />
-      </form>
+  if (loading) {
+    return <p>Loading json data...</p>;
+  }
 
-      <h2>Numbers</h2>
-      <div id='number-area'>
-        <Persons 
-          search={search}
-          idList={idList}
-          persons={persons}
-        />
+    return (
+      <div>
+        <h2>Phonebook</h2>
+
+        <form onSubmit={e => e.preventDefault()}>
+          <Search 
+            text="Search: "
+            func={updateInputSrc}
+            placeholder="Etsi nimellä"
+          />
+
+          <hr />
+
+          <AddPersons
+            updateInputStr={updateInputStr}
+            updateInputInt={updateInputInt}
+            handleSubmit={handleSubmit}
+          />
+        </form>
+
+        <h2>Numbers</h2>
+        <div id='number-area'>
+          <Persons 
+            search={search}
+            idList={idList}
+            persons={persons}
+          />
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
 
 export default App
