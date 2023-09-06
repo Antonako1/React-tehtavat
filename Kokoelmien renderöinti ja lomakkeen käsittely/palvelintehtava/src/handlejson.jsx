@@ -12,6 +12,27 @@ export const loadJson = () => {
       });
   };
 
-export const appendJson = () =>{
+  
+  export const postJson = (obj) => {
+      axios.post('http://localhost:3001/persons', obj)
+      .then(response => {
+          console.log('Data appended:', response.data);
+        })
+        .catch(error => {
+            console.error('Error appending data:', error);
+        });
+    }
+    
+    export const deleteJson = (id) =>{
+        axios.delete(`http://localhost:3001/persons/${id}`)
+        .then(response =>
+            console.log("Item deleted succesfully", response)
+        ).catch(error => 
+            console.error("Error deleting data:", error)
+        );
+    }
 
-}
+
+    export const refreshJsonId = () => {
+        
+    }

@@ -1,6 +1,7 @@
 import { useState, useEffect  } from 'react'
 import axios from 'axios';
-import { loadJson, appendJson } from './handlejson';
+import { loadJson, deleteJson, postJson, refreshJsonId } from './handlejson';
+import './styles.css';
 
 // Functions
 const checkDuplicates = (obj, copy, type) => {
@@ -47,7 +48,6 @@ const fixId = (json) => {
   }
   return jsonCopy;
 }
-
 // Components
 const Input = (props) => {
   return(
@@ -58,6 +58,11 @@ const Input = (props) => {
         placeholder={props.placeholder} 
         id={props.id}/>
     </div>
+  )
+}
+const Delete = (props) => {
+  return(
+    <button onClick={props.func} id={props.idNum}>Delete</button>
   )
 }
 
@@ -103,17 +108,25 @@ const Persons = (props) => {
     <div>
       {
         props.search !== "" ? 
-        <div>
+        <div className='personArea'>
           {
             props.idList.map(personsID =>  
-              <p key={personsID}>{props.persons[personsID-1].name} | {props.persons[personsID-1].number}</p>       
+              <span>
+                <p key={personsID}>{props.persons[personsID-1].name} | {props.persons[personsID-1].number}</p>
+                <Delete func={props.func} idNum={personsID}/>
+              </span>       
             )
           }
         </div>
         :
-        <div>
+        <div className='personArea'>
           {
-            props.persons.map(people => <p key={people.name}>{people.name} | {people.number}</p>)
+            props.persons.map(people =>
+              <span>
+                <p key={people.name}>{people.name} | {people.number}</p>
+                <Delete func={props.func} idNum={people.id}/>
+              </span>
+            )
           }
         </div>
      }
@@ -132,9 +145,11 @@ const App = () => {
   const updateInputStr = (e) => {
     setNewName(e.target.value)
   }
+
   const updateInputInt = (e) => {
     setNewNum(e.target.value)
   }
+
   const handleSubmit = () => {
     let copy = [...persons];
     let objecti = {
@@ -143,21 +158,16 @@ const App = () => {
       id: (persons.length+1)
     };
     if(checkErrors(objecti, copy) === 0){
-          objecti.number = String(objecti.number)
+        objecti.number = String(objecti.number)
         copy.push(objecti)
         setPersons(copy)
     }
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
 
-    axios.post('http://localhost:3001/persons', objecti)
-      .then(response => {
-        console.log('Data appended:', response.data);
-      })
-      .catch(error => {
-        console.error('Error appending data:', error);
-      });
+    postJson(objecti);
   }
+
   const updateInputSrc = (e) => {
     setSearch(e.target.value);
 
@@ -166,15 +176,28 @@ const App = () => {
     .includes(e.target.value.toLowerCase()))
     .map(person => person.id);
 
-  setIdList(filterPersonId);
+    setIdList(filterPersonId);
   }
-  const handleDelete = () => {
+
+  const handleDelete = (id) => {
+    const personId = id.target.id;
+    deleteJson(personId);
+
+    refreshJsonId();
     
+    loadJson()
+      .then(data => {
+        setPersons(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
   }
 
 
   useEffect(() => {
-    // Inside this effect, call loadJson and set the state when the data is fetched
     loadJson()
       .then(data => {
         setPersons(data);
@@ -216,6 +239,7 @@ const App = () => {
             search={search}
             idList={idList}
             persons={persons}
+            func={handleDelete}
           />
         </div>
       </div>
