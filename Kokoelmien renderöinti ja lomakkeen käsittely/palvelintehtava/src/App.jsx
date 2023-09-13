@@ -41,13 +41,6 @@ const checkErrors = (objecti, copy) => {
   return mem;
 }
 
-const fixId = (json) => {
-  let jsonCopy = json
-  for(let i = 0; json.persons.length;i++){
-    jsonCopy.persons[i] = i + 1;
-  }
-  return jsonCopy;
-}
 // Components
 const Input = (props) => {
   return(
@@ -179,20 +172,24 @@ const App = () => {
     setIdList(filterPersonId);
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    if(window.confirm === false){return;}
     const personId = id.target.id;
-    deleteJson(personId);
-
+    let done = false
+    try {
+      await deleteJson(personId);
+    } catch (error) {
+      console.error(error)
+    }
+    
     refreshJsonId();
     
     loadJson()
       .then(data => {
         setPersons(data);
-        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
-        setLoading(false);
       });
   }
 
