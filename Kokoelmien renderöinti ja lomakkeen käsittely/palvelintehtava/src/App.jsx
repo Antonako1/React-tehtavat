@@ -1,6 +1,6 @@
 import { useState, useEffect  } from 'react'
 import axios from 'axios';
-import { loadJson, deleteJson, postJson, refreshJsonId } from './handlejson';
+import { loadJson, deleteJson, postJson } from './handlejson';
 import './styles.css';
 
 // Functions
@@ -143,7 +143,7 @@ const App = () => {
     setNewNum(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let copy = [...persons];
     let objecti = {
       name: newName,
@@ -158,7 +158,11 @@ const App = () => {
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
 
-    postJson(objecti);
+    try {
+      await postJson(objecti);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const updateInputSrc = (e) => {
@@ -173,39 +177,33 @@ const App = () => {
   }
 
   const handleDelete = async (id) => {
-    if(window.confirm === false){return;}
-    const personId = id.target.id;
-    let done = false
-    try {
-      await deleteJson(personId);
-    } catch (error) {
-      console.error(error)
-    }
-    
-    refreshJsonId();
-    
-    loadJson()
-      .then(data => {
-        setPersons(data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    if(window.confirm("Poistetaanko numero?")){
+      const personId = id.target.id;
+      try {
+        await deleteJson(personId);
+        await updataData()
+      } catch (error) {
+        console.error(error)
+      }
+
+    }    
   }
 
+  const updataData = async () => {
+    try {
+      const data = await loadJson();
+      setPersons(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  }
+    
 
   useEffect(() => {
-    loadJson()
-      .then(data => {
-        setPersons(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      });
-  }, []);
-
+    updataData();
+  }, [])
   if (loading) {
     return <p>Loading json data...</p>;
   }
