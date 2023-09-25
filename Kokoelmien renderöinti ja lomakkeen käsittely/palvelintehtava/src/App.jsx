@@ -1,6 +1,6 @@
 import { useState, useEffect  } from 'react'
 import axios from 'axios';
-import { loadJson, deleteJson, postJson } from './handlejson';
+import { loadJson, deleteJson, postJson, replaceJson } from './handlejson';
 import './styles.css';
 
 // Functions
@@ -21,15 +21,19 @@ const checkDuplicates = (obj, copy, type) => {
   }
 }
 
-const checkErrors = (objecti, copy) => {
+const checkErrors = async (objecti, copy) => {
   let mem = 0;
   const reg = /^[0-9-_._+\s+]*$/;
   if(checkDuplicates(objecti, copy, "Name")){
-    alert(`Warning: ${objecti.name} is already in the phonebook`)
+    if(window.confirm(`${objecti.name} löytyy jo, korvataanko vanha?`)){
+      await replaceJson(objecti.id, objecti)
+    }    
     mem++;
   }
   if(checkDuplicates(objecti, copy, "Number")){
-    alert(`Warning: ${objecti.number} is already in the phonebook`)
+    if(window.confirm(`${objecti.name} löytyy jo, korvataanko vanha?`)){
+      await replaceJson(objecti.id, objecti)
+    }
     mem++;
   }
   if(mem != 2){mem=0;}

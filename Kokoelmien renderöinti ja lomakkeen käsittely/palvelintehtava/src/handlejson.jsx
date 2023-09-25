@@ -32,3 +32,13 @@ export const loadJson = async () => {
             console.error("Error deleting data:", error)
         );
     }
+
+    export const replaceJson = async (id, obj) => {
+      console.log(id)
+        axios.put(`http://localhost:3001/persons/${id}`, obj)
+        .then(response =>
+          console.log(response.data)
+        ).catch(error => 
+            console.error("Error deleting data:", error)
+        );
+    }
