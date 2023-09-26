@@ -36,7 +36,7 @@ const checkErrors = (objecti, copy) => {
   console.log(reg.test(objecti.number))
   if(reg.test(objecti.number) == false){
     alert(`Warning: ${objecti.number} is not a number`)
-    mem++;
+    return null;
   }
   return mem;
 }
@@ -150,10 +150,12 @@ const App = () => {
       number: newNum,
       id: (persons.length+1)
     };
-    if(checkErrors(objecti, copy) === 0){
+    if(checkErrors(objecti, copy) === 0 && checkErrors(objecti, copy) !== null){
         objecti.number = String(objecti.number)
         copy.push(objecti)
         setPersons(copy)
+    }else{
+      return;
     }
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
