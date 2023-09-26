@@ -57,7 +57,7 @@ const checkErrors = async (objecti, copy) => {
   if(mem !== 2 ){mem = 0;}
   if(reg.test(objecti.number) == false){
     alert(`Warning: ${objecti.number} is not a number`)
-    mem++;
+    return null
   }
   return mem;
 }
