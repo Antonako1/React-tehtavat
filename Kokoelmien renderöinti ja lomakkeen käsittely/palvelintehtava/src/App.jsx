@@ -20,24 +20,41 @@ const checkDuplicates = (obj, copy, type) => {
     }
   }
 }
-
+const findId = (type, toSearch,copy) => {
+  if(type === "nimi"){
+    for(let i = 0; i < copy.length; i++){
+      if(copy[i].name === toSearch){
+        return copy[i].id;
+      }
+    }
+    return false
+  } else {
+    for(let i = 0; i < copy.length; i++){
+      if(copy[i].number === toSearch){
+        return copy[i].id;
+      }
+    }
+    retu
+  }
+}
 const checkErrors = async (objecti, copy) => {
   let mem = 0;
   const reg = /^[0-9-_._+\s+]*$/;
   if(checkDuplicates(objecti, copy, "Name")){
     if(window.confirm(`${objecti.name} löytyy jo, korvataanko vanha?`)){
-      await replaceJson(objecti.id, objecti)
+      const id = findId("nimi", objecti.name, copy)
+      await replaceJson(id, objecti)
+      return null;
     }    
-    mem++;
   }
   if(checkDuplicates(objecti, copy, "Number")){
     if(window.confirm(`${objecti.name} löytyy jo, korvataanko vanha?`)){
-      await replaceJson(objecti.id, objecti)
-    }
-    mem++;
+      const id = findId("number", objecti.number, copy)
+      await replaceJson(id, objecti)
+      return null;
+    }  
   }
-  if(mem != 2){mem=0;}
-  console.log(reg.test(objecti.number))
+  if(mem !== 2 ){mem = 0;}
   if(reg.test(objecti.number) == false){
     alert(`Warning: ${objecti.number} is not a number`)
     mem++;
@@ -154,7 +171,11 @@ const App = () => {
       number: newNum,
       id: (persons.length+1)
     };
-    if(checkErrors(objecti, copy) === 0){
+    const result = checkErrors(objecti, copy);
+    if(result === null){
+      return;
+    }
+    if(result === 0){
         objecti.number = String(objecti.number)
         copy.push(objecti)
         setPersons(copy)
@@ -163,7 +184,9 @@ const App = () => {
     document.getElementById('input-field-int').value = "";
 
     try {
-      await postJson(objecti);
+      postJson(objecti);
+      updataData();
+      // window.location.reload();
     } catch (error) {
       console.error(error);
     }

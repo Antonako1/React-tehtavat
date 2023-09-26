@@ -34,11 +34,14 @@ export const loadJson = async () => {
     }
 
     export const replaceJson = async (id, obj) => {
-      console.log(id)
-        axios.put(`http://localhost:3001/persons/${id}`, obj)
-        .then(response =>
-          console.log(response.data)
-        ).catch(error => 
-            console.error("Error deleting data:", error)
-        );
+      console.log(id, obj)
+      try {
+        await axios.put(`http://localhost:3001/persons/${id}`, {
+          name: obj.name,
+          number: obj.number,
+        });
+      } catch (error) {
+        console.error("Error updating data:", error);
+        throw error; // Rethrow the error to handle it elsewhere, if needed
+      }
     }
