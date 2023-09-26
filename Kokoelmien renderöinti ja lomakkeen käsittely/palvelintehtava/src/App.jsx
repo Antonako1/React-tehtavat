@@ -171,14 +171,12 @@ const App = () => {
       number: newNum,
       id: (persons.length+1)
     };
-    const result = checkErrors(objecti, copy);
-    if(result === null){
-      return;
-    }
-    if(result === 0){
+    if(checkErrors(objecti, copy) === 0 && checkErrors(objecti, copy) !== null){
         objecti.number = String(objecti.number)
         copy.push(objecti)
         setPersons(copy)
+    }else {
+      return;
     }
     document.getElementById('input-field-str').value = "";
     document.getElementById('input-field-int').value = "";
