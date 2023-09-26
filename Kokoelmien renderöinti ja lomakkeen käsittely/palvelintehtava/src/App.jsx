@@ -57,7 +57,7 @@ const checkErrors = async (objecti, copy) => {
   if(mem !== 2 ){mem = 0;}
   if(reg.test(objecti.number) == false){
     alert(`Warning: ${objecti.number} is not a number`)
-    mem++;
+    return null;
   }
   return mem;
 }
@@ -150,11 +150,15 @@ const Persons = (props) => {
 
 const App = () => {
   const [persons, setPersons] = useState([]);  
-  const [newName, setNewName] = useState('')
+  const [newName, setNewName] = useState("")
   const [newNum, setNewNum] = useState(0);
   const [idList, setIdList] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [submit, setSubmit] = useState(false);
+  const [deletedName, setDeletedName] = useState("")
+  const [deleted, setDeleted] = useState(false);
   
   const updateInputStr = (e) => {
     setNewName(e.target.value)
@@ -186,6 +190,11 @@ const App = () => {
     try {
       postJson(objecti);
       updataData();
+      setSubmit(true);
+      // Oottaa kaks sekkaa
+      setTimeout(() => {
+        setSubmit(false);
+      }, 2000);
       // window.location.reload();
     } catch (error) {
       console.error(error);
@@ -208,7 +217,21 @@ const App = () => {
       const personId = id.target.id;
       try {
         await deleteJson(personId);
+
+        for(let i = 0; i < persons.length; i++){
+          if(String(persons[i].id) === String(personId)){
+            setDeletedName(persons[i].name)
+            console.log(persons[i])
+            break;
+          }
+        }
+        setDeleted(true);
+        // Oottaa kaks sekkaa
+        setTimeout(() => {
+          setDeleted(false);
+        }, 2000);
         await updataData()
+
       } catch (error) {
         console.error(error)
       }
@@ -221,6 +244,7 @@ const App = () => {
       const data = await loadJson();
       setPersons(data);
       setLoading(false);
+
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
@@ -237,6 +261,17 @@ const App = () => {
 
     return (
       <div>
+        <div className='del'>
+          {
+            submit ?
+            <p>Added {newName}</p>
+            :
+              deleted ?
+                <p>Deleted {deletedName}</p>
+              :
+              <></>
+          }
+        </div>
         <h2>Phonebook</h2>
 
         <form onSubmit={e => e.preventDefault()}>
