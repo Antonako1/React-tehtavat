@@ -8,10 +8,24 @@ body{
 p {
   color: red;
 }
+h3{
+  color: darkorchid;
+}
+.DEL{
+  background-color: red;
+}
+.EDIT{
+  background-color: blue;
+  color: white;
+}
 .lolo{
   margin-top: 10px;
   border: 1px solid peru;
   background-color: chartreuse;
-  width: calc(100px);
+  width: calc(350px);
   text-align: center;
+}
+.inner{
+  border: 1px solid black;
+  color: aqua;
 }
