@@ -38,7 +38,6 @@ const findId = (type, toSearch,copy) => {
   }
 }
 const checkErrors = async (objecti, copy) => {
-  let mem = 0;
   const reg = /^[0-9-_._+\s+]*$/;
   if(checkDuplicates(objecti, copy, "Name")){
     if(window.confirm(`${objecti.name} löytyy jo, korvataanko vanha?`)){
@@ -46,20 +45,18 @@ const checkErrors = async (objecti, copy) => {
       await replaceJson(id, objecti)
       return null;
     }    
-  }
-  if(checkDuplicates(objecti, copy, "Number")){
-    if(window.confirm(`${objecti.name} löytyy jo, korvataanko vanha?`)){
+  } else if(checkDuplicates(objecti, copy, "Number")){
+    if(window.confirm(`${objecti.number} löytyy jo, korvataanko vanha?`)){
       const id = findId("number", objecti.number, copy)
       await replaceJson(id, objecti)
       return null;
     }  
   }
-  if(mem !== 2 ){mem = 0;}
   if(reg.test(objecti.number) == false){
     alert(`Warning: ${objecti.number} is not a number`)
     return null;
   }
-  return mem;
+  return 0;
 }
 
 // Components
@@ -159,6 +156,8 @@ const App = () => {
   const [submit, setSubmit] = useState(false);
   const [deletedName, setDeletedName] = useState("")
   const [deleted, setDeleted] = useState(false);
+  const [changed, setChanged] = useState(false);
+  const [changedName, setChangedName] = useState(false);
   
   const updateInputStr = (e) => {
     setNewName(e.target.value)
@@ -173,33 +172,47 @@ const App = () => {
     let objecti = {
       name: newName,
       number: newNum,
-      id: (persons.length+1)
+      id: persons.length + 1,
     };
-    const result = checkErrors(objecti, copy);
-    if(result === null){
-      return;
-    }
-    if(result === 0){
-        objecti.number = String(objecti.number)
-        copy.push(objecti)
-        setPersons(copy)
-    }
-    document.getElementById('input-field-str').value = "";
-    document.getElementById('input-field-int').value = "";
-
+  
     try {
-      postJson(objecti);
-      updataData();
+      let num = await checkErrors(objecti, copy);
+      console.log(num);
+  
+      if (num === 0) {
+        objecti.number = String(objecti.number);
+        copy.push(objecti);
+        setPersons(copy);
+        console.log("ADSA");
+      } else {
+        setChangedName(objecti.name);
+        setChanged(true);
+  
+        // Wait for 2 seconds
+        setTimeout(() => {
+          setChanged(false);
+        }, 2000);
+  
+        await updataData();
+        return;
+      }
+  
+      document.getElementById('input-field-str').value = '';
+      document.getElementById('input-field-int').value = '';
+  
+      await postJson(objecti);
+      await updataData();
       setSubmit(true);
-      // Oottaa kaks sekkaa
+  
+      // Wait for 2 seconds
       setTimeout(() => {
         setSubmit(false);
       }, 2000);
-      // window.location.reload();
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+  
 
   const updateInputSrc = (e) => {
     setSearch(e.target.value);
@@ -251,6 +264,7 @@ const App = () => {
     }
   }
     
+  
 
   useEffect(() => {
     updataData();
@@ -269,6 +283,9 @@ const App = () => {
               deleted ?
                 <p>Deleted {deletedName}</p>
               :
+                changed ?
+                  <p>Changed {changedName} </p>
+                :
               <></>
           }
         </div>
