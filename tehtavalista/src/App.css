@@ -28,4 +28,5 @@ h3{
 .inner{
   border: 1px solid black;
   color: aqua;
+  margin-top: 5px;
 }

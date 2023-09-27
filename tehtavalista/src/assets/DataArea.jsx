@@ -4,7 +4,9 @@ import { useState } from "react"
  */
 
 
-
+/**
+ * Editointi alue
+ */
 const InnerDataAreaEdit = (props) => {
     return(
         <span>
@@ -20,37 +22,46 @@ const InnerDataAreaEdit = (props) => {
  */
 
 const InnerDataArea = (props) => {
-
-    return(
+    return (
       <div key={props.id + "a" + props.id} className='inner'>
         {
-            props.editInner ?
-                <InnerDataAreaEdit 
-                    parentId={props.parentId}
-                    id={props.id}
-                    handleChangeInner={props.handleChangeInner}
-                    newThingg={props.newThingg}
-                    handleClick={props.handleClick}
-                />
+            props.editInner && props.id === props.toEditArea ?
+            <InnerDataAreaEdit
+                parentId={props.parentId}
+                id={props.id}
+                handleChangeInner={props.handleChangeInner}
+                newThingg={props.newThingg}
+                handleClick={props.handleClick}
+            />
             :
                 <span>
-                    <p>{props.newThingg}</p>
-                    <button className="EDIT" onClick={() => props.handleClick("EDITINNER", props.id, props.parentId)}>Muokkaa muistia</button>
-                    <button className="DEL" onClick={() => props.handleClick("DELINNER", props.id, props.parentId)}>Poista muisti</button>
+                <p>{props.newThingg}</p>
+                                                                {/*      Lähettää mitä tekee, millä, ja vanhemman id:een */}
+                <button className="EDIT" onClick={() => props.handleClick("EDITINNER", props.id, props.parentId)}>Muokkaa muistia</button>
+                <button className="DEL" onClick={() => props.handleClick("DELINNER", props.id, props.parentId)}>Poista muisti</button>
                 </span>
         }
       </div>
-    )
-  }
+    );
+  };
+  
   
   /**
    * Tuo näkyviin listalta datan
    */
 export const DataArea = (props) => {
+    // Editointinappien state
     const [edit, setEdit] = useState(false)
     const [editInner ,setEditInner] = useState(false)
+
+    // Otsikon uusi teksti
     const [otsikkoUusi, setOtsikkoUusi] = useState("")
+
+    // Innerin uusi teksti
     const [innerUusi, setInnerUusi] = useState("");
+
+    // Pitää tallessa mitä pitää muokata
+    const [toEditArea, setToEditArea] = useState(null)
 
     // Tallentaa otsikon
     const handleChangeOtsikko = (e) => {
@@ -67,23 +78,29 @@ export const DataArea = (props) => {
 
         // Innerin editointi nappi
         case "EDITINNER":
-            setEditInner(!editInner)
+            setEditInner(true);
+            setToEditArea(id)
             break;
 
         // Innerin tallennus
         case "SAVEINNER":
-            if(!window.confirm("Tallennetaanko muutokset?")){
-                setEditInner(false)
+            if (!window.confirm("Tallennetaanko muutokset?")) {
+                // Sulje editointi
+                setEditInner(false);
+                setToEditArea(null)
                 return;
             }
+            console.log(props.id, id, innerUusi)
             // Lähetä muutokset
-            if(innerUusi === ""){
-                props.saveChanges("INNER", props.id, id, "[tyhjä]")
+            if (innerUusi === "") {
+                props.saveChanges("INNER", props.id, id, "[tyhjä]");
             } else {
-                props.saveChanges("INNER", props.id, id, innerUusi)
+                props.saveChanges("INNER", props.id, id, innerUusi);
             }
-            setEditInner(false)
+            setToEditArea(null)
+            setEditInner(false);
             break;
+
 
         // Otsikon tallennus
         case "SAVEOTSIKKO":
@@ -154,6 +171,7 @@ export const DataArea = (props) => {
 
                   editInner={editInner}
                   handleChangeInner={handleChangeInner}
+                  toEditArea={toEditArea}
                 />
               );
             }
